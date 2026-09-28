@@ -7,6 +7,12 @@ license.workspace = true
 repository.workspace = true
 description = "CLI for inspecting, validating, and exporting VALORANT replay files"
 
+# The pipeline is a library so other programs can export without spawning the
+# CLI. The binary below is a thin wrapper over `vrfkit::run_cli`.
+[lib]
+name = "vrfkit"
+path = "src/lib.rs"
+
 [[bin]]
 name = "vrfkit"
 path = "src/main.rs"

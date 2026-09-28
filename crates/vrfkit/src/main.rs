@@ -4,27 +4,17 @@
 //! `export` is the only optional feature (on by default). Without it the
 //! binary still inspects, validates and runs diag -- the last two drive the
 //! whole decode pipeline -- and nothing links arrow, parquet or zstd.
+//!
+//! The pipeline itself lives in the library target (`src/lib.rs`) so other
+//! programs can call it directly; this binary only forwards the command line.
 
 #![forbid(unsafe_code)]
-
-mod cli;
-mod diagnose;
-#[cfg(feature = "export")]
-mod driver;
-mod error;
-mod inspect;
-#[cfg(feature = "export")]
-mod manifest;
-mod oracle;
-mod pass;
-mod report;
-mod sink;
 
 use std::process::ExitCode;
 
 fn main() -> ExitCode {
     let args: Vec<String> = std::env::args().collect();
-    match cli::run(&args) {
+    match vrfkit::run_cli(&args) {
         // Not always SUCCESS: `validate` returns its own code (`oracle::Verdict`).
         Ok(code) => ExitCode::from(code),
         Err(e) => {
